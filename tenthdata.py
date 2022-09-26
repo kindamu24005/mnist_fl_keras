@@ -12,17 +12,30 @@ import matplotlib.pyplot as plt
 # MNISTデータを読込む
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-print(x_train.shape)
-print(y_train.shape)
+print(len(x_train))
+print(len(y_train))
+print(len(x_test))
+print(len(y_test))
 
-x_train10, x_train, y_train10, y_train = train_test_split(x_train, y_train, test_size=0.9, random_state=2)
+x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=10000, random_state=2)
 
-print(x_train10.shape)
-print(y_train10.shape)
+print(len(x_train))
+print(len(x_valid))
+print(len(x_test))
+print(len(y_train))
+print(len(y_valid))
+print(len(y_test))
 
-x_train_t, x_valid_t, y_train_t, y_valid_t = train_test_split(x_train10, y_train10, test_size=0.15, random_state=1)
+x_train, x_no, y_train, y_no = train_test_split(x_train, y_train, train_size=5000, random_state=2)
 
+print(len(x_train))
+print(len(x_valid))
+print(len(x_test))
+print(len(y_train))
+print(len(y_valid))
+print(len(y_test))
 
+""" 
 modeltenth = Sequential()
 
 modeltenth.add(Conv2D(filters = 20, kernel_size = (5, 5), padding = 'Same', activation ='relu', input_shape = (28,28,1)))
@@ -64,7 +77,7 @@ plt.plot(val_acc,label="Validation accuracy")
 plt.title('modeltenth accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='best')
+plt.legend(['Train', 'Valid'], loc='best')
 
 #ヒストリーの可視化（損失）
 fig.add_subplot(1, 2, 2) 
@@ -75,5 +88,6 @@ plt.plot(val_loss, label="validation loss")
 plt.title('modeltenth loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='best')
+plt.legend(['Train', 'Valid'], loc='best')
 plt.show()
+ """
