@@ -56,8 +56,8 @@ modelquarter.add(Dense(10, activation = "softmax"))
 # EaelyStoppingの設定
 early_stopping =  EarlyStopping(
                             monitor='val_loss',
-                            min_delta=0.0001,
-                            patience=3,
+                            min_delta=0,
+                            patience=10,
 )
 
 
@@ -95,7 +95,7 @@ acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 plt.plot(acc, label="Training accuracy")
 plt.plot(val_acc,label="Validation accuracy")
-plt.title('modelquarter accuracy')
+plt.title('Modelquarter accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Valid'], loc='best')
@@ -106,7 +106,7 @@ loss = history.history["loss"]
 val_loss = history.history["val_loss"]
 plt.plot(loss, label="Training loss")
 plt.plot(val_loss, label="validation loss")
-plt.title('modelquarter loss')
+plt.title('Modelquarter loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Valid'], loc='best')
