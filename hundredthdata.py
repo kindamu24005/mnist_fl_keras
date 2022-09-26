@@ -8,6 +8,9 @@ from sklearn.model_selection import train_test_split
 
 import matplotlib.pyplot as plt
 
+from keras.callbacks import EarlyStopping
+
+
 
 # MNISTデータを読込む
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -50,12 +53,20 @@ modelhundredth.add(Flatten())
 modelhundredth.add(Dense(500, activation = "relu"))
 modelhundredth.add(Dense(10, activation = "softmax"))
 
+# EaelyStoppingの設定
+early_stopping =  EarlyStopping(
+                            monitor='val_loss',
+                            min_delta=0.0001,
+                            patience=3,
+)
+
+
 import time
 
 start = time.time()
 opt = keras.optimizers.RMSprop(lr=1e-7, rho=0.9, epsilon=1e-08, decay=0.0)
 modelhundredth.compile(optimizer = opt, loss = "sparse_categorical_crossentropy", metrics=["accuracy"])
-history = modelhundredth.fit(x_train, y_train, validation_data=(x_valid, y_valid), epochs=50, batch_size=8, verbose=1)
+history = modelhundredth.fit(x_train, y_train, validation_data=(x_valid, y_valid), epochs=10000, batch_size=8, verbose=1, callbacks=[early_stopping])
 finish_time = time.time() - start
 
 
