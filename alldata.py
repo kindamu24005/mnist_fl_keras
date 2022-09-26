@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 
 import matplotlib.pyplot as plt
 
+
 # MNISTデータを読込む
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -26,7 +27,7 @@ print(len(y_valid))
 print(len(y_test))
 
 
-""" 
+
 modelall = Sequential()
 
 modelall.add(Conv2D(filters = 20, kernel_size = (5, 5), padding = 'Same', activation ='relu', input_shape = (28,28,1)))
@@ -46,8 +47,15 @@ import time
 start = time.time()
 opt = keras.optimizers.RMSprop(lr=1e-7, rho=0.9, epsilon=1e-08, decay=0.0)
 modelall.compile(optimizer = opt, loss = "sparse_categorical_crossentropy", metrics=["accuracy"])
-history = modelall.fit(x_train, y_train, validation_data=(x_valid, y_valid), epochs=100, batch_size=8, verbose=1)
+history = modelall.fit(x_train, y_train, validation_data=(x_valid, y_valid), epochs=2, batch_size=8, verbose=1)
 finish_time = time.time() - start
+
+
+# モデル評価（スコア出力）
+test_loss, test_acc = modelall.evaluate(x_test, y_test, verbose=0)
+
+
+# 可視化
 
 fig = plt.figure(figsize=(8, 8))
 plt.gca().spines['right'].set_visible(False)
@@ -55,9 +63,10 @@ plt.gca().spines['top'].set_visible(False)
 plt.gca().spines['bottom'].set_visible(False)
 plt.gca().spines['left'].set_visible(False)
 plt.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=False, bottom=False, left=False, right=False, top=False)
-plt.text(0.38, 1.12, "All data", fontsize="x-large")
-plt.text(0.35, 1.08, "Learning time : " + f'{round(finish_time,5)}' + "sec", color="red")
-
+plt.text(0.43, 1.11, "All data", fontsize="x-large")
+plt.text(0.35, 1.09, "Learning time : " + f'{round(finish_time,5)}' "sec", color="red")
+plt.text(0.35, 1.06, "Loss evaluate : " + f'{round(test_loss,5)}', color="blue")
+plt.text(0.35, 1.04, "Accuracy evaluate : " + f'{round(test_acc,5)}', color="blue")
 
 #ヒストリーの可視化（正確）
 fig.add_subplot(1, 2, 1) 
@@ -82,4 +91,5 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Valid'], loc='best')
 plt.show()
 
- """
+# モデル評価（スコア出力）
+test_loss, test_acc = modelall.evaluate(x_test, y_test, verbose=0)
