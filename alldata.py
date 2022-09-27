@@ -48,8 +48,8 @@ modelall.add(Dense(10, activation = "softmax"))
 # EaelyStoppingの設定
 early_stopping =  EarlyStopping(
                             monitor='val_loss',
-                            min_delta=0,
-                            patience=10,
+                            min_delta=0.0001,
+                            patience=5,
 )
 
 
