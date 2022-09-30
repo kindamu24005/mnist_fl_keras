@@ -1,4 +1,8 @@
-from pyexpat import model
+from stadle import AdminAgent
+from stadle.lib.util import client_arg_parser
+from stadle.lib.entity.model import BaseModel
+from stadle import BaseModelConvFormat
+
 from tensorflow import keras
 from keras import optimizers
 from keras.datasets import mnist
@@ -7,6 +11,8 @@ from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
 
 from stadle import BaseModelConvFormat
 from stadle.lib.entity.model import BaseModel
+
+
 
 def get_mnist_model():
 
@@ -31,3 +37,14 @@ def get_mnist_model():
     )
 
     return BaseModel("Tensorflow-Mnist-Model", model, BaseModelConvFormat.keras_format)
+
+if __name__ == '__main__':
+    args = client_arg_parser()
+
+    admin_agent = AdminAgent(config_file="config/config_agent.json", simulation_flag=args.simulation,
+                             aggregator_ip_address=args.aggregator_ip, reg_port=args.reg_port, agent_name=args.agent_name,
+                             exch_port=args.exch_port, model_path=args.model_path, base_model=get_mnist_model(),
+                             agent_running=False)
+
+    admin_agent.preload()
+    admin_agent.initialize()
