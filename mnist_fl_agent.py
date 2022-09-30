@@ -46,8 +46,8 @@ def get_mnist_model():
     return model
 
 # 学習
-def train(self, _x_train, _y_train, _x_valid, _y_valid, epoch, batch_size, cb_origin):
-    hist = self.model.fit(
+def train(model, _x_train, _y_train, _x_valid, _y_valid, epoch, batch_size, cb_origin):
+    hist = model.fit(
         _x_train,
         _y_train, 
         validation_data=(_x_valid, _y_valid), 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     start = time.time()
 
     # 学習
-    hist = model.train(x_train, y_train, x_valid, y_valid, epoch, batch_size, cb_origin)
+    hist = model.train(model, x_train, y_train, x_valid, y_valid, epoch, batch_size, cb_origin)
 
     finish_time = time.time() - start
 
