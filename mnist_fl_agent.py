@@ -59,29 +59,28 @@ def train(model, _x_train, _y_train, _x_valid, _y_valid, epoch, batch_size, cb_o
     return hist
 
 # オリジナルのcallbackを作成
-class OriginHistory(keras.callbacks.Callback):
-    def on_epoch_end(self, epoch, logs={}):
+def on_epoch_end(self, epoch, logs={}):
+    
+    # Epochが偶数の時のみ処理
+    if (epoch % 2 == 0):
+
+        # 最初のEpochは処理しない
+        if (epoch != 0):
+
+            # 偶数Epoch終了毎に値を上のリストに入れる   
+            self.pref_dict = {         
+                'performance':logs.get('val_acc'),
+                'accuracy':logs.get('val_acc'),
+                'loss_training':logs.get('loss'),
+                'loss_test':logs.get('val_loss')
+            }
+
+            # パフォーマンス値とモデルを送信
+            stadle_client.send_trained_model(model, self.perf_dict)
         
-        # Epochが偶数の時のみ処理
-        if (epoch % 2 == 0):
-
-            # 最初のEpochは処理しない
-            if (epoch != 0):
-
-                # 偶数Epoch終了毎に値を上のリストに入れる   
-                self.pref_dict = {         
-                    'performance':self.logs.get('val_acc'),
-                    'accuracy':self.logs.get('val_acc'),
-                    'loss_training':self.logs.get('loss'),
-                    'loss_test':self.logs.get('val_loss')
-                }
-
-                # パフォーマンス値とモデルを送信
-                stadle_client.send_trained_model(model, self.perf_dict)
-            
-            # 集約されたグローバルモデルをサーバーから取得
-            self.state_dict = stadle_client.wait_for_sg_model().state_dict()
-            model.load_state_dict(self.state_dict)
+        # 集約されたグローバルモデルをサーバーから取得
+        self.state_dict = stadle_client.wait_for_sg_model().state_dict()
+        model.load_state_dict(self.state_dict)
             
 
 
@@ -113,7 +112,7 @@ if __name__ == '__main__':
     stadle_client.set_bm_obj(model)
 
     # callbackのインスタンスを作成
-    cb_origin = OriginHistory()
+    cb_origin = on_epoch_end()
 
     # 学習時間計測
     import time
