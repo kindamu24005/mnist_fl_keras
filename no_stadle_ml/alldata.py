@@ -45,6 +45,7 @@ modelall.add(Flatten())
 modelall.add(Dense(500, activation = "relu"))
 modelall.add(Dense(10, activation = "softmax"))
 
+
 # EaelyStoppingの設定
 early_stopping =  EarlyStopping(
                             monitor='val_loss',

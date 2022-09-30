@@ -30,13 +30,8 @@ def get_mnist_model():
     model.add(Dense(500, activation = "relu"))
     model.add(Dense(10, activation = "softmax"))
 
-    model.compile(
-        optimizer=keras.optimizers.RMSprop(lr=1e-7, rho=0.9, epsilon=1e-08, decay=0.0),
-        loss="sparse_categorical_crossentropy",
-        metrics=["sparse_categorical_accuracy"],
-    )
-
     return BaseModel("Tensorflow-Mnist-Model", model, BaseModelConvFormat.keras_format)
+
 
 if __name__ == '__main__':
     args = client_arg_parser()
