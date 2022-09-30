@@ -46,19 +46,19 @@ def get_mnist_model():
     return model
 
 # 学習
-def train(self, _x_train, _y_train, _x_valid, _y_valid, cb_origin):
+def train(self, _x_train, _y_train, _x_valid, _y_valid, epoch, batch_size, cb_origin):
     hist = self.model.fit(
         _x_train,
         _y_train, 
         validation_data=(_x_valid, _y_valid), 
-        epochs=self.epoch, 
-        batch_size=self.batch_size, 
+        epochs=epoch, 
+        batch_size=batch_size, 
         verbose=1,
         callbacks=[cb_origin])
 
     return hist
 
-# オリジナルのHistoryを作成
+# オリジナルのcallbackを作成
 class OriginHistory(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs={}):
         
@@ -66,22 +66,22 @@ class OriginHistory(keras.callbacks.Callback):
         if (epoch % 2 == 0):
 
             # 最初のEpochは処理しない
-            if (e != 0):
+            if (epoch != 0):
 
                 # 偶数Epoch終了毎に値を上のリストに入れる   
-                pref_dict = {         
-                    self.logs['acc'],
-                    self.logs['val_acc'],
-                    self.logs['loss'],
-                    self.logs['val_loss']
+                self.pref_dict = {         
+                    'performance':self.logs.get('val_acc'),
+                    'accuracy':self.logs.get('val_acc'),
+                    'loss_training':self.logs.get('loss'),
+                    'loss_test':self.logs.get('val_loss')
                 }
 
                 # パフォーマンス値とモデルを送信
-                stadle_client.send_trained_model(model, perf_dict)
+                stadle_client.send_trained_model(model, self.perf_dict)
             
             # 集約されたグローバルモデルをサーバーから取得
-            state_dict = stadle_client.wait_for_sg_model().state_dict()
-            model.load_state_dict(state_dict)
+            self.state_dict = stadle_client.wait_for_sg_model().state_dict()
+            model.load_state_dict(self.state_dict)
             
 
 
@@ -113,7 +113,15 @@ if __name__ == '__main__':
     stadle_client.set_bm_obj(model)
 
     # callbackのインスタンスを作成
-    cd_origin = OriginHistory()
+    cb_origin = OriginHistory()
+
+    # 学習時間計測
+    import time
+    start = time.time()
 
     # 学習
-    hist = model.train(x_train, y_train, x_valid, y_valid, cd_origin)
+    hist = model.train(x_train, y_train, x_valid, y_valid, epoch, batch_size, cb_origin)
+
+    finish_time = time.time() - start
+
+    print(finish_time)
