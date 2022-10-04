@@ -103,5 +103,3 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Valid'], loc='best')
 plt.show()
 
-# モデル評価（スコア出力）
-test_loss, test_acc = modelall.evaluate(x_test, y_test, verbose=0)
