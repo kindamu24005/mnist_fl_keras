@@ -1,4 +1,4 @@
-from tensorflow import keras
+""" from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
 
@@ -27,4 +27,60 @@ def get_mnist_model():
 
     return model
 
-print(get_mnist_model().summary())
+print(get_mnist_model().summary()) """
+
+from copy import deepcopy
+import tensorflow as tf
+from tensorflow import keras
+
+from stadle import AdminAgent
+from stadle import BaseModelConvFormat
+from stadle.lib.entity.model import BaseModel
+
+
+def get_mini_model():
+    model = tf.keras.models.Sequential([
+        keras.layers.Dense(5, activation='relu', input_shape=(3,)),
+        keras.layers.Dense(4)
+    ])
+
+    model.compile(
+        optimizer="adam",
+        loss="sparse_categorical_crossentropy",
+        metrics=["sparse_categorical_accuracy"],
+    )
+
+    return model
+
+
+model = get_mini_model()
+
+# print(model)
+
+# copy処理をする場合
+#import copy
+#model = copy.deepcopy(model)
+
+model1 = model
+print(id(model))
+print(id(model1))
+print(id(model1)==id(model))
+
+model2= keras.models.clone_model(model)
+
+print(id(model))
+print(id(model2))
+print(id(model2)==id(model))
+
+model_weight = model.get_weights()
+
+# model_weight = model.set_weights(model_weight)
+
+# print(model_weight)
+
+d = dict()
+
+for i, w in enumerate(model_weight):
+    d[f'layer_{i}'] = w
+
+print(d)

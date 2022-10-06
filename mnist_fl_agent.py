@@ -1,4 +1,5 @@
 from tensorflow import keras
+import tensorflow as tf
 from keras import optimizers
 from keras.datasets import mnist
 from keras.models import Sequential
@@ -77,6 +78,10 @@ def on_epoch_end(self, epoch, logs={}):
 
             # パフォーマンス値とモデルを送信
             stadle_client.send_trained_model(model, self.perf_dict)
+
+            # モデルをローカルに保存
+            model.save('./saved_model/my_model')
+
         
         # 集約されたグローバルモデルをサーバーから取得
         self.state_dict = stadle_client.wait_for_sg_model().state_dict()
